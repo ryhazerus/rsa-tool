@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Triggers: ids.DUPLICATE_ID_IN_FILE -->
+<uml:Model xmi:version="2.1"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:uml="http://www.eclipse.org/uml2/3.0.0/UML"
+    xmi:id="_model01" name="DuplicateIdModel">
+
+  <packagedElement xmi:type="uml:Class" xmi:id="_cls01" name="ClassA"/>
+  <!-- Same ID reused — should trigger DUPLICATE_ID_IN_FILE -->
+  <packagedElement xmi:type="uml:Interface" xmi:id="_cls01" name="InterfaceA"/>
+
+</uml:Model>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Triggers: refs.BROKEN_HREF_FILE, refs.MALFORMED_HREF -->
+<uml:Model xmi:version="2.1"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:uml="http://www.eclipse.org/uml2/3.0.0/UML"
+    xmi:id="_model01" name="BrokenHrefModel">
+
+  <packagedElement xmi:type="uml:Component" xmi:id="_comp01" name="Radar">
+    <!-- href pointing to a file that does not exist on disk -->
+    <interfaceRealization xmi:type="uml:InterfaceRealization" xmi:id="_ir01">
+      <contract href="nonexistent_interfaces.emx#_iface99"/>
+    </interfaceRealization>
+
+    <!-- Malformed href — missing '#' -->
+    <interfaceRealization xmi:type="uml:InterfaceRealization" xmi:id="_ir02">
+      <contract href="no_hash_here"/>
+    </interfaceRealization>
+  </packagedElement>
+
+</uml:Model>

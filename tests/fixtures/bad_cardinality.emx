@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Triggers: cardinality.SINGLE_REF_HAS_MULTIPLE_TARGETS,
+               cardinality.MULTIPLICITY_INCONSISTENCY -->
+<uml:Model xmi:version="2.1"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:uml="http://www.eclipse.org/uml2/3.0.0/UML"
+    xmi:id="_model01" name="BadCardinalityModel">
+
+  <packagedElement xmi:type="uml:Interface" xmi:id="_iface01" name="ISystem1"/>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_iface02" name="ISystem2"/>
+
+  <packagedElement xmi:type="uml:Component" xmi:id="_comp01" name="Controller">
+    <!-- 'contract' referencing two interfaces instead of one — the "two systems" problem -->
+    <interfaceRealization xmi:type="uml:InterfaceRealization"
+        xmi:id="_ir01" client="_comp01"
+        contract="_iface01 _iface02"/>
+  </packagedElement>
+
+  <!-- Property with lower > upper (e.g. 3..1 is nonsensical) -->
+  <packagedElement xmi:type="uml:Class" xmi:id="_cls01" name="Sensor">
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_prop01" name="readings" type="_cls01">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_lv01" value="3"/>
+      <upperValue xmi:type="uml:LiteralInteger" xmi:id="_uv01" value="1"/>
+    </ownedAttribute>
+  </packagedElement>
+
+  <!-- Generalization: 'general' has two targets instead of one -->
+  <packagedElement xmi:type="uml:Class" xmi:id="_base1" name="BaseA"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_base2" name="BaseB"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_cls02" name="Child">
+    <generalization xmi:type="uml:Generalization"
+        xmi:id="_gen01" general="_base1 _base2"/>
+  </packagedElement>
+
+</uml:Model>

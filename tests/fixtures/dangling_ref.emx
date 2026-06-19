@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Triggers: refs.DANGLING_IDREF -->
+<uml:Model xmi:version="2.1"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:uml="http://www.eclipse.org/uml2/3.0.0/UML"
+    xmi:id="_model01" name="DanglingRefModel">
+
+  <packagedElement xmi:type="uml:Class" xmi:id="_cls01" name="Sensor">
+    <!-- 'type' points to _NONEXISTENT which does not exist -->
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_prop01" name="value" type="_NONEXISTENT"/>
+  </packagedElement>
+
+  <!-- InterfaceRealization with dangling contract -->
+  <packagedElement xmi:type="uml:Component" xmi:id="_comp01" name="ECU">
+    <interfaceRealization xmi:type="uml:InterfaceRealization"
+        xmi:id="_ir01"
+        client="_comp01" contract="_MISSING_IFACE"/>
+  </packagedElement>
+
+</uml:Model>

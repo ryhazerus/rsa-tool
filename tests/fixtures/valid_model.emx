@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Model xmi:version="2.1"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:uml="http://www.eclipse.org/uml2/3.0.0/UML"
+    xmi:id="_model01" name="ValidModel">
+
+  <!-- A simple interface -->
+  <packagedElement xmi:type="uml:Interface" xmi:id="_iface01" name="IMotor">
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_op01" name="start"/>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_op02" name="stop"/>
+  </packagedElement>
+
+  <!-- A component that realizes the interface once -->
+  <packagedElement xmi:type="uml:Component" xmi:id="_comp01" name="MotorController">
+    <interfaceRealization xmi:type="uml:InterfaceRealization"
+        xmi:id="_ir01" name=""
+        client="_comp01" contract="_iface01"/>
+  </packagedElement>
+
+  <!-- A class that inherits from another class -->
+  <packagedElement xmi:type="uml:Class" xmi:id="_cls01" name="BaseDevice"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_cls02" name="Sensor">
+    <generalization xmi:type="uml:Generalization"
+        xmi:id="_gen01" general="_cls01"/>
+  </packagedElement>
+
+  <!-- A simple association between two classes -->
+  <packagedElement xmi:type="uml:Association" xmi:id="_assoc01" name="uses"
+      memberEnd="_prop01 _prop02">
+    <ownedEnd xmi:type="uml:Property" xmi:id="_prop01" name="motor" type="_comp01"/>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_prop02" name="sensor" type="_cls02"/>
+  </packagedElement>
+
+</uml:Model>

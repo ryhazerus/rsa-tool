@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Triggers: structure.GENERALIZATION_MISSING_GENERAL,
+               structure.INTERFACE_REALIZATION_MISSING_CONTRACT,
+               structure.DUPLICATE_INTERFACE_REALIZATION,
+               structure.ASSOCIATION_WRONG_END_COUNT,
+               structure.DEPENDENCY_MISSING_SUPPLIER -->
+<uml:Model xmi:version="2.1"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:uml="http://www.eclipse.org/uml2/3.0.0/UML"
+    xmi:id="_model01" name="BadStructureModel">
+
+  <packagedElement xmi:type="uml:Interface" xmi:id="_iface01" name="IEngine"/>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_iface02" name="IFuel"/>
+
+  <!-- Generalization with no 'general' attribute -->
+  <packagedElement xmi:type="uml:Class" xmi:id="_cls01" name="BaseUnit"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_cls02" name="DerivedUnit">
+    <generalization xmi:type="uml:Generalization" xmi:id="_gen01"/>
+  </packagedElement>
+
+  <!-- Component realizes same interface twice -->
+  <packagedElement xmi:type="uml:Component" xmi:id="_comp01" name="Engine">
+    <interfaceRealization xmi:type="uml:InterfaceRealization"
+        xmi:id="_ir01" client="_comp01" contract="_iface01"/>
+    <interfaceRealization xmi:type="uml:InterfaceRealization"
+        xmi:id="_ir02" client="_comp01" contract="_iface01"/>
+    <!-- InterfaceRealization with no contract -->
+    <interfaceRealization xmi:type="uml:InterfaceRealization"
+        xmi:id="_ir03" client="_comp01"/>
+  </packagedElement>
+
+  <!-- Association with only one memberEnd instead of two -->
+  <packagedElement xmi:type="uml:Association" xmi:id="_assoc01" name="broken_assoc"
+      memberEnd="_prop01">
+    <ownedEnd xmi:type="uml:Property" xmi:id="_prop01" name="end1" type="_cls01"/>
+  </packagedElement>
+
+  <!-- Dependency with no supplier -->
+  <packagedElement xmi:type="uml:Dependency" xmi:id="_dep01" name="myDep"
+      client="_comp01"/>
+
+</uml:Model>

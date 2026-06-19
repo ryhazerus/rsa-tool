@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Triggers: structure.CIRCULAR_GENERALIZATION -->
+<uml:Model xmi:version="2.1"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:uml="http://www.eclipse.org/uml2/3.0.0/UML"
+    xmi:id="_model01" name="CircularGenModel">
+
+  <!-- A → B → C → A cycle -->
+  <packagedElement xmi:type="uml:Class" xmi:id="_clsA" name="ClassA">
+    <generalization xmi:type="uml:Generalization" xmi:id="_genA"
+        specific="_clsA" general="_clsB"/>
+  </packagedElement>
+
+  <packagedElement xmi:type="uml:Class" xmi:id="_clsB" name="ClassB">
+    <generalization xmi:type="uml:Generalization" xmi:id="_genB"
+        specific="_clsB" general="_clsC"/>
+  </packagedElement>
+
+  <packagedElement xmi:type="uml:Class" xmi:id="_clsC" name="ClassC">
+    <generalization xmi:type="uml:Generalization" xmi:id="_genC"
+        specific="_clsC" general="_clsA"/>
+  </packagedElement>
+
+</uml:Model>

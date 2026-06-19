@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="2.1"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:uml="http://www.eclipse.org/uml2/3.0.0/UML"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore">
+
+  <uml:Model xmi:id="_Hj3mQpLkEd2xoNqrR1bVAA" name="VehicleControlSystem">
+
+    <!-- ================================================================
+         Primitive types (referenced by typed elements)
+    ================================================================ -->
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="_PrimFloat"  name="float"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="_PrimUint8"  name="uint8_t"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="_PrimBool"   name="bool"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="_PrimVoid"   name="void"/>
+
+    <!-- ================================================================
+         Enumeration: EngineState
+    ================================================================ -->
+    <packagedElement xmi:type="uml:Enumeration" xmi:id="_EnumEngState" name="EngineState">
+      <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="_EnumLit0" name="OFF"/>
+      <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="_EnumLit1" name="IDLE"/>
+      <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="_EnumLit2" name="RUNNING"/>
+      <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="_EnumLit3" name="FAULT"/>
+    </packagedElement>
+
+    <!-- ================================================================
+         Package: Interfaces
+    ================================================================ -->
+    <packagedElement xmi:type="uml:Package" xmi:id="_PkgIface" name="Interfaces">
+
+      <!-- ISpeedSensor -->
+      <packagedElement xmi:type="uml:Interface" xmi:id="_IfcSpeed" name="ISpeedSensor">
+        <ownedOperation xmi:type="uml:Operation" xmi:id="_OpGetSpeed" name="getSpeed">
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="_ParGetSpeedRet"
+              name="" direction="return" type="_PrimFloat"/>
+        </ownedOperation>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="_OpIsValid" name="isValid">
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="_ParIsValidRet"
+              name="" direction="return" type="_PrimBool"/>
+        </ownedOperation>
+      </packagedElement>
+
+      <!-- IBrakeController -->
+      <packagedElement xmi:type="uml:Interface" xmi:id="_IfcBrake" name="IBrakeController">
+        <ownedOperation xmi:type="uml:Operation" xmi:id="_OpApplyBrake" name="applyBrake">
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="_ParBrakeForce"
+              name="force" direction="in" type="_PrimFloat"/>
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="_ParApplyBrakeRet"
+              name="" direction="return" type="_PrimVoid"/>
+        </ownedOperation>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="_OpRelease" name="release">
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="_ParReleaseRet"
+              name="" direction="return" type="_PrimVoid"/>
+        </ownedOperation>
+      </packagedElement>
+
+      <!-- IEngineController -->
+      <packagedElement xmi:type="uml:Interface" xmi:id="_IfcEngine" name="IEngineController">
+        <ownedOperation xmi:type="uml:Operation" xmi:id="_OpSetThrottle" name="setThrottle">
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="_ParThrottleVal"
+              name="value" direction="in" type="_PrimUint8"/>
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="_ParSetThrottleRet"
+              name="" direction="return" type="_PrimVoid"/>
+        </ownedOperation>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="_OpGetEngState" name="getEngineState">
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="_ParEngStateRet"
+              name="" direction="return" type="_EnumEngState"/>
+        </ownedOperation>
+      </packagedElement>
+
+      <!-- IDiagnostics — intentionally has a dangling 'contract' reference to test validator -->
+      <packagedElement xmi:type="uml:Interface" xmi:id="_IfcDiag" name="IDiagnostics">
+        <ownedOperation xmi:type="uml:Operation" xmi:id="_OpRunDiag" name="runSelfTest">
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="_ParDiagRet"
+              name="" direction="return" type="_PrimBool"/>
+        </ownedOperation>
+      </packagedElement>
+
+    </packagedElement>
+
+    <!-- ================================================================
+         Package: Components
+    ================================================================ -->
+    <packagedElement xmi:type="uml:Package" xmi:id="_PkgComp" name="Components">
+
+      <!-- SpeedSensor component -->
+      <packagedElement xmi:type="uml:Component" xmi:id="_CompSpeed" name="SpeedSensor">
+        <interfaceRealization xmi:type="uml:InterfaceRealization"
+            xmi:id="_IrSpeedSensor"
+            client="_CompSpeed" contract="_IfcSpeed"/>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_PropSpeedRaw"
+            name="rawValue" type="_PrimFloat">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_LvSpeedRaw" value="1"/>
+          <upperValue xmi:type="uml:LiteralInteger" xmi:id="_UvSpeedRaw" value="1"/>
+        </ownedAttribute>
+      </packagedElement>
+
+      <!-- BrakeActuator component -->
+      <packagedElement xmi:type="uml:Component" xmi:id="_CompBrake" name="BrakeActuator">
+        <interfaceRealization xmi:type="uml:InterfaceRealization"
+            xmi:id="_IrBrakeActuator"
+            client="_CompBrake" contract="_IfcBrake"/>
+        <!-- Realizes IDiagnostics — contract exists -->
+        <interfaceRealization xmi:type="uml:InterfaceRealization"
+            xmi:id="_IrBrakeDiag"
+            client="_CompBrake" contract="_IfcDiag"/>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_PropBrakeActive"
+            name="isActive" type="_PrimBool">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_LvBrakeActive" value="1"/>
+          <upperValue xmi:type="uml:LiteralInteger" xmi:id="_UvBrakeActive" value="1"/>
+        </ownedAttribute>
+      </packagedElement>
+
+      <!-- EngineActuator component -->
+      <packagedElement xmi:type="uml:Component" xmi:id="_CompEngine" name="EngineActuator">
+        <interfaceRealization xmi:type="uml:InterfaceRealization"
+            xmi:id="_IrEngineActuator"
+            client="_CompEngine" contract="_IfcEngine"/>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_PropThrottle"
+            name="throttlePos" type="_PrimUint8">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_LvThrottle" value="1"/>
+          <upperValue xmi:type="uml:LiteralInteger" xmi:id="_UvThrottle" value="1"/>
+        </ownedAttribute>
+      </packagedElement>
+
+      <!-- SafetyMonitor — realizes same interface twice (intentional bug for validator) -->
+      <packagedElement xmi:type="uml:Component" xmi:id="_CompSafety" name="SafetyMonitor">
+        <interfaceRealization xmi:type="uml:InterfaceRealization"
+            xmi:id="_IrSafety1"
+            client="_CompSafety" contract="_IfcDiag"/>
+        <interfaceRealization xmi:type="uml:InterfaceRealization"
+            xmi:id="_IrSafety2"
+            client="_CompSafety" contract="_IfcDiag"/>
+      </packagedElement>
+
+      <!-- ================================================================
+           ECU — top-level composition
+           Parts: speedPart, brakePart, enginePart
+           Connectors:
+             sensorToBrake   : speedPart  → brakePart
+             sensorToEngine  : speedPart  → enginePart
+      ================================================================ -->
+      <packagedElement xmi:type="uml:Component" xmi:id="_CompECU" name="ECU">
+
+        <!-- Parts (typed properties) -->
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_PartSpeed"
+            name="speedPart"  type="_CompSpeed"  isNavigable="true">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_LvPartSpeed" value="1"/>
+          <upperValue xmi:type="uml:LiteralInteger" xmi:id="_UvPartSpeed" value="1"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_PartBrake"
+            name="brakePart"  type="_CompBrake"  isNavigable="true">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_LvPartBrake" value="1"/>
+          <upperValue xmi:type="uml:LiteralInteger" xmi:id="_UvPartBrake" value="1"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_PartEngine"
+            name="enginePart" type="_CompEngine" isNavigable="true">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_LvPartEngine" value="1"/>
+          <upperValue xmi:type="uml:LiteralInteger" xmi:id="_UvPartEngine" value="1"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_PartSafety"
+            name="safetyPart" type="_CompSafety" isNavigable="true">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_LvPartSafety" value="1"/>
+          <upperValue xmi:type="uml:LiteralInteger" xmi:id="_UvPartSafety" value="1"/>
+        </ownedAttribute>
+
+        <!-- Connector: sensorToBrake -->
+        <ownedConnector xmi:type="uml:Connector" xmi:id="_ConnSB" name="sensorToBrake">
+          <end xmi:type="uml:ConnectorEnd" xmi:id="_EndSB0"
+               role="_PartSpeed"  partWithPort="_PartSpeed"/>
+          <end xmi:type="uml:ConnectorEnd" xmi:id="_EndSB1"
+               role="_PartBrake"  partWithPort="_PartBrake"/>
+        </ownedConnector>
+
+        <!-- Connector: sensorToEngine -->
+        <ownedConnector xmi:type="uml:Connector" xmi:id="_ConnSE" name="sensorToEngine">
+          <end xmi:type="uml:ConnectorEnd" xmi:id="_EndSE0"
+               role="_PartSpeed"  partWithPort="_PartSpeed"/>
+          <end xmi:type="uml:ConnectorEnd" xmi:id="_EndSE1"
+               role="_PartEngine" partWithPort="_PartEngine"/>
+        </ownedConnector>
+
+        <!-- Ports on speedPart -->
+        <ownedAttribute xmi:type="uml:Port" xmi:id="_PortSpeedOut" name="speedOut"
+            type="_CompSpeed"/>
+        <ownedAttribute xmi:type="uml:Port" xmi:id="_PortBrakeIn"  name="brakeIn"
+            type="_CompBrake"/>
+
+        <!-- Port-based connector: speedOut (port on speedPart) → brakeIn (port on brakePart) -->
+        <ownedConnector xmi:type="uml:Connector" xmi:id="_ConnPort" name="portedLink">
+          <end xmi:type="uml:ConnectorEnd" xmi:id="_EndPort0"
+               role="_PortSpeedOut" partWithPort="_PartSpeed"/>
+          <end xmi:type="uml:ConnectorEnd" xmi:id="_EndPort1"
+               role="_PortBrakeIn"  partWithPort="_PartBrake"/>
+        </ownedConnector>
+
+        <!-- Connector with dangling role reference (intentional bug for validator) -->
+        <ownedConnector xmi:type="uml:Connector" xmi:id="_ConnBad" name="brokenLink">
+          <end xmi:type="uml:ConnectorEnd" xmi:id="_EndBad0" role="_PartBrake"/>
+          <end xmi:type="uml:ConnectorEnd" xmi:id="_EndBad1" role="_PartGhost"/>
+        </ownedConnector>
+
+        <!-- Dependency on an external (cross-file) component — uses href -->
+        <packagedElement xmi:type="uml:Usage" xmi:id="_UsageECU" name="needsCANBus"
+            client="_CompECU" supplier="_MISSING_CANBUS_ID"/>
+
+      </packagedElement>
+
+    </packagedElement>
+
+    <!-- ================================================================
+         Generalisation chain (valid): BaseECU → ECU (one level)
+    ================================================================ -->
+    <packagedElement xmi:type="uml:Class" xmi:id="_BaseECU" name="BaseECU"/>
+    <packagedElement xmi:type="uml:Class" xmi:id="_ExtECU"  name="ExtendedECU">
+      <generalization xmi:type="uml:Generalization" xmi:id="_GenECU"
+          specific="_ExtECU" general="_BaseECU"/>
+    </packagedElement>
+
+  </uml:Model>
+
+</xmi:XMI>
