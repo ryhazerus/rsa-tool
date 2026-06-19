@@ -19,9 +19,6 @@ class StructureValidator(BaseValidator):
     # ------------------------------------------------------------------
 
     def _check_generalizations(self, registry, resolver) -> Iterator[Issue]:
-        # Build parent map for cycle detection: child_id → parent_id
-        parent_map: dict[str, str] = {}
-
         for elem in registry.all_elements():
             if elem.xmi_type != "uml:Generalization":
                 continue
@@ -37,29 +34,12 @@ class StructureValidator(BaseValidator):
                     element_name=elem.name,
                     message="uml:Generalization has no 'general' attribute",
                 )
-                continue
 
-            # The specific (child) is the owning Classifier — navigate via xmi:id
-            # The generalization element is owned by the specific class
-            parent_map[elem.xmi_id] = general.split()[0]
+        yield from self._detect_generalization_cycles(registry, resolver)
 
-        yield from self._detect_generalization_cycles(parent_map, registry, resolver)
-
-    def _detect_generalization_cycles(self, parent_map, registry, resolver) -> Iterator[Issue]:
-        # parent_map: gen_id → general_id (the parent class id)
-        # Build child class → parent class map via generalization elements
-        class_parent: dict[str, str] = {}
-        for gen_id, parent_id in parent_map.items():
-            gen_elem = registry.lookup_id(gen_id)
-            if gen_elem is None:
-                continue
-            # The owning class is the parent element in the XML tree — we find it
-            # by looking for any element whose xmi:id matches something that owns this gen
-            # Simpler: walk all elements, find Classifiers whose 'generalization' attr includes gen_id
-            pass
-
-        # Alternative approach: find cycles by traversing the general attribute chain directly
-        # We build: classifier_id → set of general_ids it directly points to
+    def _detect_generalization_cycles(self, registry, resolver) -> Iterator[Issue]:
+        # Find cycles by traversing the 'general' chain directly.
+        # Build: classifier_id → set of general_ids it directly points to
         generalizes: dict[str, set[str]] = defaultdict(set)
         for elem in registry.all_elements():
             if elem.xmi_type != "uml:Generalization":
@@ -67,8 +47,7 @@ class StructureValidator(BaseValidator):
             general = elem.attrs.get("general", "").strip()
             if not general:
                 continue
-            # Find owning classifier: it's the element with a 'generalization' attr containing this elem's id
-            # We'll approximate by checking who has generalization= containing this id
+            # The owning classifier is named by the 'specific' attribute.
             specific_id = elem.attrs.get("specific", "").strip()
             if specific_id:
                 generalizes[specific_id].add(general.split()[0])

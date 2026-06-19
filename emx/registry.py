@@ -52,7 +52,7 @@ class Registry:
             yield from emx.elements.values()
 
     def all_refs(self):
-        for emx in self.files.values():
+        for emx in list(self.files.values()):
             yield from emx.refs
 
     def cross_file_duplicates(self) -> list[list[Element]]:

@@ -76,6 +76,54 @@ python main.py model.emx --exclude-rules ids.DUPLICATE_ID_CROSS_FILE
 python main.py ./project --rules refs.BROKEN_HREF_FILE,refs.DANGLING_IDREF
 ```
 
+### Example output
+
+Clean file:
+
+```
+Validated 1 file(s).
+
+No issues found.
+```
+
+File with errors (text format):
+
+```
+Validated 1 file(s).
+
+[ERROR]  refs.BROKEN_HREF_FILE                    broken_href.emx:11
+         href 'nonexistent_interfaces.emx#_iface99' — file not found: /workspace/nonexistent_interfaces.emx
+[ERROR]  refs.MALFORMED_HREF                      broken_href.emx:16
+         href 'no_hash_here' has no '#' separator
+[ERROR]  structure.INTERFACE_REALIZATION_MISSING_CONTRACT broken_href.emx:10
+         element:  _ir01
+         uml:InterfaceRealization has no 'contract' attribute
+[ERROR]  cardinality.MULTIPLICITY_INCONSISTENCY   bad_cardinality.emx:21
+         element:  _prop01  readings
+         Multiplicity lower=3 > upper=1 on uml:Property 'readings'
+[ERROR]  structure.CIRCULAR_GENERALIZATION        circular_generalization.emx:9
+         element:  _clsA  ClassA
+         Circular generalization: _clsA → _clsB → _clsC → _clsA
+
+5 error(s) found.
+```
+
+Same errors as JSON (`--format json`):
+
+```json
+[
+  {
+    "severity": "ERROR",
+    "rule": "refs.BROKEN_HREF_FILE",
+    "file": "broken_href.emx",
+    "line": 11,
+    "element_id": "_ir01",
+    "element_name": "",
+    "message": "href 'nonexistent_interfaces.emx#_iface99' — file not found: ..."
+  }
+]
+```
+
 ---
 
 ## Rewire tool (`rewire.py`)
@@ -131,6 +179,44 @@ python rewire.py model.emx --connector "link1" --end0 "outPort" --pwp0 "NewPart"
 --pwp1 NAME           Owning part for end[1] (port-based ends)
 --swap                Swap both ends (cannot combine with --end0/--end1)
 --out FILE            Write output here instead of modifying in place
+```
+
+### Example output
+
+Inspecting a connector (`--show`):
+
+```
+Connector: 'link1'  (2 end(s))
+  end[0]  [direct]  part='sensorPart'  (id=_partSensor)
+  end[1]  [direct]  part='actuatorPart'  (id=_partActuator)
+```
+
+Rewiring both ends to a new file (`--out`):
+
+```
+  end[0] role: 'sensorPart' → 'actuatorPart'
+  end[1] role: 'actuatorPart' → 'sensorPart'
+Written to: rewired.emx
+```
+
+Swapping in place (`--swap`), which also creates a backup:
+
+```
+  Swapped ends of connector 'link1'.
+Backup created: model.emx.bak_original
+Written to: model.emx
+```
+
+Error — connector not found:
+
+```
+ERROR: No uml:Connector named 'badname' found in model.emx.
+```
+
+Error — part name not found:
+
+```
+ERROR: No uml:Property or uml:Port named 'NOSUCHPART' found in the file.
 ```
 
 ---

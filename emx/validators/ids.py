@@ -53,14 +53,16 @@ class IdValidator(BaseValidator):
                 )
 
     def _missing_id(self, registry) -> Iterator[Issue]:
-        for elem in registry.all_elements():
-            if elem.xmi_type in _MUST_HAVE_ID and not elem.xmi_id:
+        for emx in registry.files.values():
+            for xmi_type, name, line in emx.missing_ids:
+                if xmi_type not in _MUST_HAVE_ID:
+                    continue
                 yield Issue(
                     severity=Severity.ERROR,
                     rule="ids.MISSING_ID",
-                    file_path=elem.file_path,
-                    line=elem.line,
+                    file_path=emx.path,
+                    line=line,
                     element_id="",
-                    element_name=elem.name,
-                    message=f"{elem.xmi_type} element '{elem.name}' is missing xmi:id",
+                    element_name=name,
+                    message=f"{xmi_type} element '{name}' is missing xmi:id",
                 )

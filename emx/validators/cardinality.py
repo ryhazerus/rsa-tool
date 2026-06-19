@@ -41,8 +41,8 @@ class CardinalityValidator(BaseValidator):
             if elem.xmi_type not in ("uml:Property", "uml:Parameter"):
                 continue
 
-            lower = self._find_value(elem, registry, "lowerValue")
-            upper = self._find_value(elem, registry, "upperValue")
+            lower = elem.lower
+            upper = elem.upper
 
             if lower is None or upper is None:
                 continue
@@ -75,7 +75,7 @@ class CardinalityValidator(BaseValidator):
             is_navigable = elem.attrs.get("isNavigable", "").lower() == "true"
             if not is_navigable:
                 continue
-            upper = self._find_value(elem, registry, "upperValue")
+            upper = elem.upper
             if upper is None:
                 yield Issue(
                     severity=Severity.WARN,
@@ -89,31 +89,3 @@ class CardinalityValidator(BaseValidator):
                         f"(implicitly unbounded — may be unintentional)"
                     ),
                 )
-
-    def _find_value(self, elem, registry, child_tag: str) -> str | None:
-        """
-        Look for a child element (lowerValue/upperValue) of the given element
-        by scanning the registry for elements whose parent matches.
-        Since we don't track the tree structure directly, we look for elements
-        tagged with the child_tag that reference (or are owned by) this element.
-
-        In EMX, lowerValue/upperValue are inline child elements of a Property.
-        We stored all elements flat, so we check tag names and look for the
-        'value' attribute on OpaqueExpression/LiteralInteger/LiteralUnlimitedNatural
-        children.
-        """
-        for other in registry.all_elements():
-            if other.tag != child_tag:
-                continue
-            # heuristic: the element's xmi_id should be referenced nowhere;
-            # its 'value' or literal content is what we want
-            # We check if the file matches and approximate proximity by line numbers
-            if other.file_path != elem.file_path:
-                continue
-            # Accept if this value element's line is within 50 lines of the property
-            if abs(other.line - elem.line) > 50:
-                continue
-            val = other.attrs.get("value", "")
-            if val:
-                return val
-        return None

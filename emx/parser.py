@@ -38,6 +38,8 @@ class Element:
     attrs: dict            # all raw attributes
     file_path: Path
     line: int
+    lower: Optional[str] = None  # value of the child <lowerValue>, if present
+    upper: Optional[str] = None  # value of the child <upperValue>, if present
 
 
 @dataclass
@@ -58,6 +60,8 @@ class EmxFile:
     elements: dict[str, Element] = field(default_factory=dict)  # xmi_id → Element
     refs: list[RefSite] = field(default_factory=list)
     duplicate_ids: list[tuple[str, int, int]] = field(default_factory=list)  # (id, line1, line2)
+    # Elements that carry no xmi:id: (xmi_type, name, line)
+    missing_ids: list[tuple[str, str, int]] = field(default_factory=list)
 
 
 def _local_name(tag: str) -> str:
@@ -76,6 +80,18 @@ def _qname_to_prefixed(tag: str, nsmap: dict) -> str:
         if ns_uri == uri and prefix:
             return f"{prefix}:{local}"
     return local
+
+
+def _child_value(elem, child_local: str) -> Optional[str]:
+    """Return the 'value' attribute of a direct child with the given local tag
+    name (e.g. lowerValue/upperValue), or None if absent/empty."""
+    for child in elem:
+        if not isinstance(child.tag, str):
+            continue
+        if _local_name(child.tag) == child_local:
+            val = child.get("value")
+            return val if val else None
+    return None
 
 
 def parse_file(path: Path) -> EmxFile:
@@ -111,7 +127,11 @@ def parse_file(path: Path) -> EmxFile:
                     attrs=attrs,
                     file_path=path,
                     line=line,
+                    lower=_child_value(elem, "lowerValue"),
+                    upper=_child_value(elem, "upperValue"),
                 )
+        else:
+            emx.missing_ids.append((xmi_type or "", name, line))
 
         # Collect IDREF attributes
         for attr, val in attrs.items():
